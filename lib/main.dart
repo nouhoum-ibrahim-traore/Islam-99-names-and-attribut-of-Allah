@@ -48,6 +48,8 @@ class MyHomePage extends StatelessWidget {
 */
 
 // ignore_for_file: public_member_api_docs, lines_longer_than_80_chars
+import 'dart:convert';
+
 import 'package:allah_names_app/appDatas/name.dart';
 import 'package:allah_names_app/widgets/nameBox.dart';
 import 'package:flutter/foundation.dart';
@@ -83,13 +85,22 @@ class _MyAppState extends State<MyApp> {
 
 class HomePage extends StatelessWidget {
   HomePage({Key key}) : super(key: key);
-  final List<Name> items = Name.getNameList();
+  final List items = Name.getNameList();
 
   @override
   Widget build(BuildContext context) {
+    var CurrentPrjId = FutureBuilder(
+      future: _loadAssetsImages(context),
+      builder: (context, snapshot) {
+        if (snapshot.hasData)
+          return Text(snapshot.data.toString());
+        else if (snapshot.hasError) return Text(snapshot.error);
+        return Text("Await for data");
+      },
+    );
     return Scaffold(
       appBar: AppBar(
-        title: Center(child: const Text('Islam 5 Pilars')),
+        title: Center(child: const Text('99 noms d\'Allah')),
       ),
       body: Container(
         color: Colors.deepOrangeAccent,
@@ -100,9 +111,11 @@ class HomePage extends StatelessWidget {
                 color: Colors.blue[100],
                 child: ListView.builder(
                   controller: scrollController,
-                  itemCount: 5,
+                  itemCount: 99,
                   itemBuilder: (BuildContext context, int index) {
                     return NameBox(item: items[index]);
+
+                    //CurrentPrjId;
                     // return ListTile(title: Text('Item $index'));
                   },
                 ),
@@ -112,5 +125,27 @@ class HomePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future _loadAssetsImages(BuildContext context) async {
+    // >> To get paths you need these 2 lines
+    final manifestContent =
+        await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+    List assetsImagesNamesList = [];
+    final Map<String, dynamic> manifestMap = json.decode(manifestContent);
+    // >> To get paths you need these 2 lines
+    final imagePaths = manifestMap.keys
+        .where((String key) => key.contains('assets/'))
+        .where((String key) => key.contains('.gif'))
+        .toList();
+    imagePaths.forEach((v) {
+      var w = "";
+      for (int i = 7; i < v.length; i++) {
+        w = w + v[i];
+      }
+      assetsImagesNamesList.add(w);
+    });
+    assetsImagesNamesList.sort();
+    return assetsImagesNamesList;
   }
 }

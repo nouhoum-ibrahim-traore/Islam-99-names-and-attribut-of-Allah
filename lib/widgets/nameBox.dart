@@ -1,5 +1,6 @@
 import 'package:allah_names_app/appDatas/name.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class NameBox extends StatelessWidget {
   final Name item;
@@ -14,10 +15,22 @@ class NameBox extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Image.asset(
-              'assets/' + item.image,
-              width: 60,
-              height: 60,
+            Container(
+              width: 45,
+              height: 45,
+              decoration: BoxDecoration(
+                color: Colors.lightBlueAccent,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.black,
+                  style: BorderStyle.none,
+                ),
+                // borderRadius: BorderRadius.circular(),
+              ),
+              child: Center(
+                  child: Text(
+                item.arabicScript,
+              )),
             ),
             Expanded(
                 child: Container(
